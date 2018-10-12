@@ -24,7 +24,7 @@ public class Compilateur  {
     String line;
 
     while ( (line = reader.readLine()) != null ) {
-      System.out.println(line);
+
       matcher = signature.matcher(line);
       if (matcher.find()){
         System.out.println("It's a match!");
