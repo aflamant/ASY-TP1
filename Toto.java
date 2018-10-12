@@ -9,7 +9,7 @@ public class Toto {
     
     Pattern p = Pattern.compile("(public|private) (static)+ ([a-zA-Z]+) ([a-zA-Z0-9]+) \\( *([a-zA-Z]+) ([a-zA-Z0-9]+) *\\) *\\{");
     Matcher m = p.matcher(test);
-    while(m.find()){
+    if(m.find()){
       System.out.println(m.group());
 
       System.out.println(m.group(3));

@@ -17,7 +17,7 @@ public class Compilateur  {
     BufferedWriter stubWriter = new BufferedWriter(stub);
     BufferedWriter skeletonWriter = new BufferedWriter(skeleton);
 
-    Pattern signature = Pattern.compile("(public|private) (static)+ ([a-zA-Z]+) ([a-zA-Z0-9]+) \( (*[a-zA-Z]+) ([a-zA-Z0-9]+) *\) *{");
+    Pattern signature = Pattern.compile("(public|private) (static)+ ([a-zA-Z]+) ([a-zA-Z0-9]+) \\( *([a-zA-Z]+) ([a-zA-Z0-9]+) *\\) *\\{");
 
     Matcher matcher;
     String name;
@@ -25,11 +25,15 @@ public class Compilateur  {
 
     while ( (line = reader.readLine()) != null ) {
       System.out.println(line);
-      if ((matcher = signature.matcher(line))){
+      matcher = signature.matcher(line);
+      if (matcher.find()){
         System.out.println("It's a match!");
-        
-        name = matcher.group();
-        System.out.println(name);
+      System.out.println(matcher.group());
+
+      System.out.println(matcher.group(3));
+      System.out.println(matcher.group(4));
+      System.out.println(matcher.group(5));
+      System.out.println(matcher.group(6));
 
       }
     }
