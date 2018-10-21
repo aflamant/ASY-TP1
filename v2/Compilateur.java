@@ -8,67 +8,56 @@ import java.util.regex.Pattern;
 public class Compilateur {
 
   public static void main(String[] args) throws Exception {
+    /* Récupération des arguments */
+    if (args.length != 3) 
+      System.out.println("Utilisation : java Compilateur <fichier source> <addresse ip> <port>");
+
     FileReader file = new FileReader(args[0]);
     String className = args[0].replaceAll(".*\\/|.java", "");
     String address = args[1];
     String port = args[2];
 
+    /*Ouverture des streams*/
     FileWriter stub = new FileWriter(className +".java");
     FileWriter skeleton = new FileWriter("Skeleton.java");
     BufferedReader reader = new BufferedReader(file);
     BufferedWriter stubWriter = new BufferedWriter(stub);
     BufferedWriter skeletonWriter = new BufferedWriter(skeleton);
 
+    /* Declaration de la regex*/
     Pattern signature = Pattern.compile(
         "(public|private|protected) (static )?([a-zA-Z]+) ([a-zA-Z0-9]+) *(\\( *([a-zA-Z]+ [a-zA-Z0-9]+)?( *, *[a-zA-Z]+ [a-zA-Z0-9])* *\\)) *\\{");
-
     Matcher matcher;
 
+    /* Ecriture de l'en-tête statique des fichiers de destination */
+    writeSkeletonHeader(skeletonWriter, port);
+    writeStubHeader(stubWriter, address, port, className);
+    
     String line;
     String[][] params;
 
-    writeSkeletonHeader(skeletonWriter, port);
-    writeStubHeader(stubWriter, address, port, className);
-
+    /* Itération sur les lignes du fichier source */
     while ((line = reader.readLine()) != null) {
-
       matcher = signature.matcher(line);
       if (matcher.find()) {
-        System.out.println(matcher.group());
-
-        System.out.println("group(1) : " + matcher.group(1)); // (public|private|protected)
-        System.out.println("group(2) : " + matcher.group(2)); // (static)?
-        System.out.println("group(3) : " + matcher.group(3)); // type de retour
-        System.out.println("group(4) : " + matcher.group(4)); // nom de la fonction
-        System.out.println("group(5) : " + matcher.group(5)); // paramètres
-
         String [] preParams = matcher.group(5).replaceAll("( *\\( *| *\\) *)", "").split(" *, *"); // Extraction des paramètres
-
         if (!preParams[0].equals("")) params = new String[preParams.length][];
         else params = new String[0][];
-        for (int i =0; i<params.length; i++) {
+        for (int i =0; i<params.length; i++) { /* Séparation du nom et du type des paramètres */
           params[i] = preParams[i].split(" ");
         }
-        
 
-        System.out.print("Paramètres : -");
-        for (String[] param : params) {
-          System.out.print(param[0] + "-");
-        }
-        System.out.println();
-
-        // System.out.println("group(6) : " + matcher.group(6));
-        // System.out.println("group(7) : " + matcher.group(7));
-        // System.out.println("group(8) : " + matcher.group(8));
-        // System.out.println("group(9) : " + matcher.group(9));
-
+        /* Ecriture des lignes correspondant à la fonction lue */
         writeSkeletonCase(skeletonWriter, matcher.group(1), matcher.group(3), matcher.group(4), params);
         writeStubFunction(stubWriter, matcher.group(1), matcher.group(3), matcher.group(4), params);
       }
     }
+
+    /* Lignes de fin des fichiers */
     writeSkeletonFooter(skeletonWriter);
     stubWriter.write("}\n");
 
+    /* fermeture des streams*/
     skeletonWriter.close();
     stubWriter.close();
     reader.close();
