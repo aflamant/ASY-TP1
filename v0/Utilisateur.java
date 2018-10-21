@@ -5,5 +5,6 @@ public class Utilisateur {
     System.out.println(result);
     result = f.calcul2(2,3,4);
     System.out.println(result);
+    
   }
 }

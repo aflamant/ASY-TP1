@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class MyServerSocket {
+public class Skeleton {
   public static void main(String[] args) {
     ServerSocket sos = null;
     try {
@@ -27,6 +27,7 @@ public class MyServerSocket {
         in = new ObjectInputStream(s.getInputStream());
 
         Fournisseur f = new Fournisseur();
+        
         while (true) {
           Requete requete = (Requete) in.readObject();
           Object result;
