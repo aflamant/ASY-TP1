@@ -3,8 +3,6 @@ import java.net.Socket;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import java.io.IOException;
-
 public class Fournisseur {
 
   private static final String ipAddr = "127.0.0.1";
@@ -28,15 +26,15 @@ public class Fournisseur {
     Object[] arguments = new Object[]{x};
     Requete r = new Requete("calcul", arguments);
 
-    int result = -1;
+    Object result = null;
     try {
       out.writeObject(r);
   
-      result = (int) in.readObject();
+      result = in.readObject();
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return result;
+    return (int) result;
   }
 
   public int calcul2(int x, int y, int z) {
@@ -47,7 +45,7 @@ public class Fournisseur {
     try {
       out.writeObject(r);
   
-      result = (int) in.readObject();
+      result = in.readObject();
     } catch (Exception e) {
       e.printStackTrace();
     }
